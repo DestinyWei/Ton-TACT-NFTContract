@@ -5,6 +5,8 @@ import { readdir } from "fs/promises";
 import { updateMetadataFiles, uploadFolderToIPFS } from "./metadata";
 import { waitSeqno } from "./delay";
 import { NftCollection } from "./contracts/NftCollection";
+import { toNano } from "ton-core";
+import { NftItem } from "./contracts/NftItem";
 
 dotenv.config();
 
@@ -40,6 +42,31 @@ async function init() {
     let seqno = await collection.deploy(wallet);
     console.log(`Collection deployed: ${collection.address}`);
     await waitSeqno(seqno, wallet);
+
+    const files = await readdir(metadataFolderPath);
+    files.pop();
+    let index = 0;
+
+    seqno = await collection.topUpBalance(wallet, files.length);
+    await waitSeqno(seqno, wallet);
+    console.log(`Balance top-upped`);
+
+    for (const file of files) {
+        console.log(`Start deploy of ${index + 1} NFT`);
+        const mintParams = {
+            queryId: 0,
+            itemOwnerAddress: wallet.contract.address,
+            itemIndex: index,
+            amount: toNano("0.05"),
+            commonContentUrl: file,
+        };
+
+        const nftItem = new NftItem(collection);
+        seqno = await nftItem.deploy(wallet, mintParams);
+        console.log(`Successfully deployed ${index + 1} NFT`);
+        await waitSeqno(seqno, wallet);
+        index++;
+    }
 }
 
 
