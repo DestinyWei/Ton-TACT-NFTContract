@@ -1,0 +1,11 @@
+{
+    "name": "GCLXNFT #00",
+    "description": "A Glutton Boy",
+    "attributes": [
+        {
+            "trait_type": "Awesomeness",
+            "value": "Super cool"
+        }
+    ],
+    "image": "ipfs://QmeLFFzdCN4HbSvjFJrHrgiif2jm2n2zkRbygSAmeBbCUA/0.jpg"
+}
