@@ -7,6 +7,7 @@ import { waitSeqno } from "./delay";
 import { NftCollection } from "./contracts/NftCollection";
 import { toNano } from "ton-core";
 import { NftItem } from "./contracts/NftItem";
+import { NftMarketplace } from "./contracts/NftMarketplace";
 
 dotenv.config();
 
@@ -67,6 +68,12 @@ async function init() {
         await waitSeqno(seqno, wallet);
         index++;
     }
+
+    console.log("Start deploy of new marketplace  ");
+    const marketplace = new NftMarketplace(wallet.contract.address);
+    seqno = await marketplace.deploy(wallet);
+    await waitSeqno(seqno, wallet);
+    console.log("Successfully deployed new marketplace");
 }
 
 
