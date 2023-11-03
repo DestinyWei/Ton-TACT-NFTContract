@@ -30,6 +30,10 @@ export async function openWallet(mnemonic: string[], testnet: boolean) {
     });
 
     const contract = client.open(wallet);
+
+    let balance: bigint = await contract.getBalance();
+    console.log(`Wallet Balance: ${balance / BigInt(1000000000)}`);
+
     return { contract, keyPair };
 }
 
